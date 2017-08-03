@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -19,7 +21,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
+
 
 
 public class Config {
@@ -27,6 +29,7 @@ public class Config {
 	private static Boolean Login = false;
 	private static String url;
 	public String className;
+	private static WebDriverWait wait;
 
 	public Config(String className) {
 		this.className = className;
@@ -74,14 +77,25 @@ public class Config {
         WriteLog(String.format("\tSet Value By Xpath: [%s] = [%s]", Xpath, value));
     }
 	
-	public void SetAndSelectValueByXpath(String Xpath, String value){
-	    driver.findElement(By.xpath(Xpath)).clear();
-        driver.findElement(By.xpath(Xpath)).sendKeys(value);
-        Select select = new Select(driver.findElement(By.xpath(Xpath)));
-        select.selectByVisibleText(value);
-	}
+	
+	public void selectOptionWithText(String FieldId, String ListOfValue, String textToSelect){
+	    try {
+            driver.findElement(By.xpath(FieldId)).sendKeys(textToSelect);
+            WebElement autoOptions = driver.findElement(By.id(ListOfValue));
+            Thread.sleep(2000);
+            List<WebElement> optionsToSelect = autoOptions.findElements(By.tagName("li"));
+            for(WebElement option : optionsToSelect){
+                if(option.getText().equals(textToSelect)) {
+                    option.click();
+                    break;
+                }
+            }
+	    } catch (Exception e) {
 
-
+        }   
+    }
+	
+	
 	public void ClearValueByID(String id) {
 		verifyPageLoaded(id);
 		driver.findElement(By.id(id)).clear();
