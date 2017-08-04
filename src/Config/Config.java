@@ -78,7 +78,7 @@ public class Config {
     }
 	
 	
-	public void selectOptionWithText(String FieldId, String ListOfValue, String textToSelect){
+	public void SetValueForFiled(String FieldId, String ListOfValue, String textToSelect){
 	    try {
             driver.findElement(By.xpath(FieldId)).sendKeys(textToSelect);
             WebElement autoOptions = driver.findElement(By.id(ListOfValue));
@@ -94,6 +94,9 @@ public class Config {
 
         }   
     }
+	
+	
+	
 	
 	
 	public void ClearValueByID(String id) {
