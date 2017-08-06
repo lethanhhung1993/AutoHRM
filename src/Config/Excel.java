@@ -30,12 +30,12 @@ public class Excel {
 			workbook = new XSSFWorkbook(inputStream);
 			Sheet sheet = workbook.getSheet(sheetName);
 			Iterator<Row> iterator = sheet.iterator();
-			iterator.next();
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
 				HashMap<Integer, Object> map = new HashMap<>();
+				int i = 0;
 				for (Cell cell : nextRow) {
-					map.put(cell.getRowIndex(), cell.toString());
+					map.put(i++, cell.toString());
 				}
 				if (!map.isEmpty()) {
 					result.add(map);
@@ -48,7 +48,28 @@ public class Excel {
 		return result;
 	}
 
-	public static ArrayList<HashMap<Integer, Object>> ReadDataByIndex(String path, String sheetName,
+	public static ArrayList<Object> ReadDataByColumn(String path, String sheetName,
+            int column) {
+        ArrayList<Object> result = new ArrayList<Object>();
+        Workbook workbook;
+        FileInputStream inputStream;
+        try {
+            inputStream = new FileInputStream(new File(path));
+            workbook = new XSSFWorkbook(inputStream);
+            Sheet sheet = workbook.getSheet(sheetName);
+            Iterator<Row> iterator = sheet.iterator();
+            while (iterator.hasNext()) {
+                Row nextRow = iterator.next();
+                result.add(nextRow.getCell(column));
+            }
+            workbook.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+	
+	public static ArrayList<HashMap<Integer, Object>> ReadDataByColumns(String path, String sheetName,
 			ArrayList<Integer> getColumn) {
 		ArrayList<HashMap<Integer, Object>> result = new ArrayList<HashMap<Integer, Object>>();
 		Workbook workbook;
@@ -58,7 +79,6 @@ public class Excel {
 			workbook = new XSSFWorkbook(inputStream);
 			Sheet sheet = workbook.getSheet(sheetName);
 			Iterator<Row> iterator = sheet.iterator();
-			iterator.next();
 			while (iterator.hasNext()) {
 				Row nextRow = iterator.next();
 				HashMap<Integer, Object> map = new HashMap<>();
